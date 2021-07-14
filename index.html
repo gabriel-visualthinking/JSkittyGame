@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta name="viewport" content="user-scalable=no">
   <title>Edgy Space Kitty!</title>
   <style>
     .touchButton { height: 9rem; width: 9rem; opacity: 0.5; background-image: url(https://i.imgur.com/Q8WtwvB.png); background-size: contain; touch-action: manipulation;}
@@ -16,14 +17,14 @@
   <table style="width:31rem; border-spacing: 2rem; padding: 0; margin: auto;">
     <tr>
       <th>
-        <div id="leftButton" class="touchButton" onclick="keyActions({key: 'ArrowLeft'})"></div>
+        <div id="leftButton" class="touchButton" onmousedown="keyActions({key: 'ArrowLeft'})"></div>
       </th>
       <th>
-        <div id="upButton" class="touchButton" style="margin-bottom: 2rem; transform: rotate(90deg);" onclick="keyActions({key: 'ArrowUp'})"></div>
-        <div id="downButton" class="touchButton" style="transform: rotate(270deg);" onclick="keyActions({key: 'ArrowDown'})"></div>
+        <div id="upButton" class="touchButton" style="margin-bottom: 2rem; transform: rotate(90deg);" onmousedown="keyActions({key: 'ArrowUp'})"></div>
+        <div id="downButton" class="touchButton" style="transform: rotate(270deg);" onmousedown="keyActions({key: 'ArrowDown'})"></div>
       </th>
       <th>
-        <div id="rightButton" class="touchButton" style="transform: rotate(180deg);" onclick="keyActions({key: 'ArrowRight'})"></div>
+        <div id="rightButton" class="touchButton" style="transform: rotate(180deg);" onmousedown="keyActions({key: 'ArrowRight'})"></div>
       </th>
     </tr>
   </table>
