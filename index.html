@@ -1,129 +1,126 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Edgy Space Kitty!</title>
-<style>
-  .touchButton { height: 9rem; width: 9rem; opacity: 0.5; background-image: url(https://i.imgur.com/Q8WtwvB.png); background-size: contain;}
- </style>
+  <meta name="viewport" content="user-scalable=no">
+  <title>Edgy Space Kitty!</title>
+  <style>
+    .touchButton { height: 9rem; width: 9rem; opacity: 0.5; background-image: url(https://i.imgur.com/Q8WtwvB.png); background-size: contain;}
+  </style>
 </head>
-  <body style="background-image: url(https://i.imgur.com/8ZkDm6O.gif);" onload="initialize()">
+<body style="background-image: url(https://i.imgur.com/8ZkDm6O.gif);" onload="initialize()">
 
-    <div id="map" style="background-image: url(https://i.imgur.com/N213gS5.png); height: 656px; width: 640px; position: fixed; top: calc(50vh - 328px); left: calc(50vw - 320px);"></div>
-    
-    <div id="player" style="background-image: url(https://i.imgur.com/2U1GpfM.png); height: 64px; width: 32px; position: fixed; transition: left 0s, top 0s;"></div>
-    
-    <div id="controller" style="position: fixed; bottom: 1rem; width: calc(100vw - 16px); display: none;">
-      <table style="width:31rem; border-spacing: 2rem; padding: 0; margin: auto;">
-        <tr>
-          <th>
-            <div id="leftButton" class="touchButton" onclick="touchControls('ArrowLeft')"></div>
-          </th>
-          <th>
-            <div id="upButton" class="touchButton" style="margin-bottom: 2rem; transform: rotate(90deg);" onclick="touchControls('ArrowUp')"></div>
-            <div id="downButton" class="touchButton" style="transform: rotate(270deg);" onclick="touchControls('ArrowDown')"></div>
-          </th>
-          <th>
-            <div id="rightButton" class="touchButton" style="transform: rotate(180deg);" onclick="touchControls('ArrowRight')"></div>
-          </th>
-        </tr>
-      </table>
-    </div>
+<div id="map" style="background-image: url(https://i.imgur.com/N213gS5.png); height: 656px; width: 640px; position: fixed; top: calc(50vh - 328px); left: calc(50vw - 320px);"></div>
 
-    <script>
-      var coords = [10,10]
-      var colision = [
-        [4,6],[4,7],                                                            //Banco esquerdo
-        [10,6],[10,7],                                                          //Banco direito
-        [14,6],[15,6],[16,6],[14,7],[16,7],[14,8],[16,8],[14,9],[15,9],[16,9],  //Coluna Direita
-        [5,13],[6,13],[7,13],[5,14],[7,14],[5,15],[7,15],[5,16],[6,16],[7,16]   //Coluna Esquerda
-      ]
-      var moving = false
+<div id="player" style="background-image: url(https://i.imgur.com/2U1GpfM.png); height: 64px; width: 32px; position: fixed; transition: left 0s, top 0s;"></div>
 
-      function initialize(){
-        if (/Mobi/.test(navigator.userAgent)) {
-          document.getElementById('controller').style.display = 'unset'
+<div id="controller" style="position: fixed; bottom: 1rem; width: calc(100vw - 16px); display: none;">
+  <table style="width:31rem; border-spacing: 2rem; padding: 0; margin: auto;">
+    <tr>
+      <th>
+        <div id="leftButton" class="touchButton" onclick="keyActions({key: 'ArrowLeft'})"></div>
+      </th>
+      <th>
+        <div id="upButton" class="touchButton" style="margin-bottom: 2rem; transform: rotate(90deg);" onclick="keyActions({key: 'ArrowUp'})"></div>
+        <div id="downButton" class="touchButton" style="transform: rotate(270deg);" onclick="keyActions({key: 'ArrowDown'})"></div>
+      </th>
+      <th>
+        <div id="rightButton" class="touchButton" style="transform: rotate(180deg);" onclick="keyActions({key: 'ArrowRight'})"></div>
+      </th>
+    </tr>
+  </table>
+</div>
+
+<script>
+  var coords = [10,10]
+  var colision = [
+    [4,6],[4,7],                                                            //Banco esquerdo
+    [10,6],[10,7],                                                          //Banco direito
+    [14,6],[15,6],[16,6],[14,7],[16,7],[14,8],[16,8],[14,9],[15,9],[16,9],  //Coluna Direita
+    [5,13],[6,13],[7,13],[5,14],[7,14],[5,15],[7,15],[5,16],[6,16],[7,16]   //Coluna Esquerda
+  ]
+  var moving = false
+
+  function initialize(){
+    if (/Mobi/.test(navigator.userAgent)) {
+      document.getElementById('controller').style.display = 'unset'
+    }
+    document.getElementById('player').style.left = 'calc(' + ((coords[0] * 32) - 32) + 'px + 50vw - 320px)'
+    document.getElementById('player').style.top = 'calc(' + ((coords[1] * 32) - 64) + 'px + 50vh - 328px)'
+  }
+
+  function isItemInArray(array, item) {
+    for (var i = 0; i < array.length; i++) {
+      // This if statement depends on the format of your array
+      if (array[i][0] == item[0] && array[i][1] == item[1]) {
+        return true;   // Found it
+      }
+    }
+    return false;   // Not found
+  }
+
+  function keyActions(e){
+    switch (e.key){
+      case 'ArrowUp':
+        document.getElementById('player').style.backgroundImage = 'url(https://i.imgur.com/3lDckLQ.png)'
+        if (coords[1] - 1 > 0 && !moving){
+          coords[1]--
+          if (!isItemInArray(colision, coords)){
+            document.getElementById('player').style.transition = 'left 0.2s, top 0.2s'
+            document.getElementById('player').style.top = 'calc(' + ((coords[1] * 32) - 64) + 'px + 50vh - 328px)'
+            moving = true
+            setTimeout(() => {moving = false; document.getElementById('player').style.transition = 'left 0s, top 0s'}, 200)
+          } else {
+            coords[1]++
+          }
         }
-        document.getElementById('player').style.left = 'calc(' + ((coords[0] * 32) - 32) + 'px + 50vw - 320px)'
-        document.getElementById('player').style.top = 'calc(' + ((coords[1] * 32) - 64) + 'px + 50vh - 328px)'
-      }
-
-      function isItemInArray(array, item) {
-        for (var i = 0; i < array.length; i++) {
-            // This if statement depends on the format of your array
-            if (array[i][0] == item[0] && array[i][1] == item[1]) {
-                return true;   // Found it
-            }
+        break;
+      case 'ArrowDown':
+        document.getElementById('player').style.backgroundImage = 'url(https://i.imgur.com/2U1GpfM.png)'
+        if (coords[1] + 1 < 21 && !moving){
+          coords[1]++
+          if (!isItemInArray(colision, coords)){
+            document.getElementById('player').style.transition = 'left 0.2s, top 0.2s'
+            document.getElementById('player').style.top = 'calc(' + ((coords[1] * 32) - 64) + 'px + 50vh - 328px)'
+            moving = true
+            setTimeout(() => {moving = false; document.getElementById('player').style.transition = 'left 0s, top 0s'}, 200)
+          } else {
+            coords[1]--
+          }
         }
-        return false;   // Not found
-      }
-
-      function keyActions(e){
-        switch (e.key){
-          case 'ArrowUp':
-            document.getElementById('player').style.backgroundImage = 'url(https://i.imgur.com/3lDckLQ.png)'
-            if (coords[1] - 1 > 0 && !moving){
-              coords[1]--
-              if (!isItemInArray(colision, coords)){
-                document.getElementById('player').style.transition = 'left 0.2s, top 0.2s'
-                document.getElementById('player').style.top = 'calc(' + ((coords[1] * 32) - 64) + 'px + 50vh - 328px)'
-                moving = true
-                setTimeout(() => {moving = false; document.getElementById('player').style.transition = 'left 0s, top 0s'}, 200)
-              } else {
-                coords[1]++
-              }
-            }
-            break;
-          case 'ArrowDown':
-            document.getElementById('player').style.backgroundImage = 'url(https://i.imgur.com/2U1GpfM.png)'
-            if (coords[1] + 1 < 21 && !moving){
-              coords[1]++
-              if (!isItemInArray(colision, coords)){
-                document.getElementById('player').style.transition = 'left 0.2s, top 0.2s'
-                document.getElementById('player').style.top = 'calc(' + ((coords[1] * 32) - 64) + 'px + 50vh - 328px)'
-                moving = true
-                setTimeout(() => {moving = false; document.getElementById('player').style.transition = 'left 0s, top 0s'}, 200)
-              } else {
-                coords[1]--
-              }
-            }
-            break;
-          case 'ArrowLeft':
-            document.getElementById('player').style.backgroundImage = 'url(https://i.imgur.com/ukkG2Mx.png)'
-            if (coords[0] - 1 > 0 && !moving){
-              coords[0]--
-              if (!isItemInArray(colision, coords)){
-                document.getElementById('player').style.transition = 'left 0.2s, top 0.2s'
-                document.getElementById('player').style.left = 'calc(' + ((coords[0] * 32) - 32) + 'px + 50vw - 320px)'
-                moving = true
-                setTimeout(() => {moving = false; document.getElementById('player').style.transition = 'left 0s, top 0s'}, 200)
-              } else {
-                coords[0]++
-              }
-            }
-            break;
-          case 'ArrowRight':
-            document.getElementById('player').style.backgroundImage = 'url(https://i.imgur.com/jId102o.png)'
-            if (coords[0] + 1 < 21 && !moving){
-              coords[0]++
-              if (!isItemInArray(colision, coords)){
-                document.getElementById('player').style.transition = 'left 0.2s, top 0.2s'
-                document.getElementById('player').style.left = 'calc(' + ((coords[0] * 32) - 32) + 'px + 50vw - 320px)'
-                moving = true
-                setTimeout(() => {moving = false; document.getElementById('player').style.transition = 'left 0s, top 0s'}, 200)
-              } else {
-                coords[0]--
-              }
-            }
-            break;
+        break;
+      case 'ArrowLeft':
+        document.getElementById('player').style.backgroundImage = 'url(https://i.imgur.com/ukkG2Mx.png)'
+        if (coords[0] - 1 > 0 && !moving){
+          coords[0]--
+          if (!isItemInArray(colision, coords)){
+            document.getElementById('player').style.transition = 'left 0.2s, top 0.2s'
+            document.getElementById('player').style.left = 'calc(' + ((coords[0] * 32) - 32) + 'px + 50vw - 320px)'
+            moving = true
+            setTimeout(() => {moving = false; document.getElementById('player').style.transition = 'left 0s, top 0s'}, 200)
+          } else {
+            coords[0]++
+          }
         }
-      }
+        break;
+      case 'ArrowRight':
+        document.getElementById('player').style.backgroundImage = 'url(https://i.imgur.com/jId102o.png)'
+        if (coords[0] + 1 < 21 && !moving){
+          coords[0]++
+          if (!isItemInArray(colision, coords)){
+            document.getElementById('player').style.transition = 'left 0.2s, top 0.2s'
+            document.getElementById('player').style.left = 'calc(' + ((coords[0] * 32) - 32) + 'px + 50vw - 320px)'
+            moving = true
+            setTimeout(() => {moving = false; document.getElementById('player').style.transition = 'left 0s, top 0s'}, 200)
+          } else {
+            coords[0]--
+          }
+        }
+        break;
+    }
+  }
 
-      document.addEventListener('keydown',  function(e){keyActions(e)})
+  document.addEventListener('keydown',  function(e){keyActions(e)})
 
-      function touchControls(key){
-        keyActions({key: key})
-      }
-
-    </script>
-  </body>
+</script>
+</body>
 </html>
